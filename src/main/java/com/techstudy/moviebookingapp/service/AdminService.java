@@ -1,0 +1,16 @@
+package com.techstudy.moviebookingapp.service;
+
+import com.techstudy.moviebookingapp.model.BookingDetails;
+import com.techstudy.moviebookingapp.model.BookingTicketDetails;
+import java.util.Date;
+import java.util.List;
+
+public interface AdminService {
+
+     List<BookingDetails> viewBookings();
+     Boolean cancelBooking(String email);
+     List<BookingDetails> searchBooking(String input);
+     BookingDetails filterBooking(Date fromDate, Date toDate);
+     BookingDetails updateBooking(String email, BookingTicketDetails bookingTicketDetails) throws Exception;
+
+}
