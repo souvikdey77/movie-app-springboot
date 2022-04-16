@@ -8,9 +8,9 @@ import java.util.List;
 public interface AdminService {
 
      List<BookingDetails> viewBookings();
-     Boolean cancelBooking(String email);
+     BookingDetails cancelBooking(String email);
      List<BookingDetails> searchBooking(String input);
-     BookingDetails filterBooking(Date fromDate, Date toDate);
+     List<BookingDetails> filterBooking(Date fromDate, Date toDate);
      BookingDetails updateBooking(String email, BookingTicketDetails bookingTicketDetails) throws Exception;
 
 }

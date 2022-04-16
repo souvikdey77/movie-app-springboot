@@ -4,12 +4,14 @@ import com.techstudy.moviebookingapp.model.BookingDetails;
 import com.techstudy.moviebookingapp.model.BookingTicketDetails;
 import com.techstudy.moviebookingapp.serviceImpl.AdminServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/admin-management")
 public class AdminController {
@@ -22,13 +24,13 @@ public class AdminController {
         return new ResponseEntity<>(serviceImpl.viewBookings(), HttpStatus.OK);
     }
 
-    @GetMapping("/bookings/{email_id}")
-    public ResponseEntity<Boolean> cancelBooking(@PathVariable("email_id") String email) throws Exception {
-         Boolean cancelledStatus = serviceImpl.cancelBooking(email);
-         if(!cancelledStatus){
+    @GetMapping("/bookings/cancel/{email_id}")
+    public ResponseEntity<BookingDetails> cancelBooking(@PathVariable("email_id") String email) throws Exception {
+        BookingDetails bookingDetails = serviceImpl.cancelBooking(email);
+         if(!bookingDetails.getBookingStatus().equalsIgnoreCase("cancelled")){
              throw new Exception("Booking is not cancelled with id : " + email);
          }
-         return new ResponseEntity<>(cancelledStatus, HttpStatus.OK);
+         return new ResponseEntity<>(bookingDetails, HttpStatus.OK);
     }
 
     @GetMapping("/bookings/search")
@@ -38,9 +40,9 @@ public class AdminController {
     }
 
     @GetMapping("/bookings/filter")
-    public ResponseEntity<BookingDetails> filterBooking(@RequestParam(required = true) Date fromDate, @RequestParam(required = true) Date toDate) throws Exception {
-        BookingDetails bookingDetails = serviceImpl.filterBooking(fromDate,toDate);
-        if(bookingDetails == null){
+    public ResponseEntity<List<BookingDetails>> filterBooking(@RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date fromDate, @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date toDate) throws Exception {
+        List<BookingDetails> bookingDetails = serviceImpl.filterBooking(fromDate,toDate);
+        if(bookingDetails.size() == 0){
             throw new Exception("No data found");
         }
         return new ResponseEntity<>(bookingDetails, HttpStatus.OK);

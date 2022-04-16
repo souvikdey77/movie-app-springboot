@@ -21,7 +21,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Boolean cancelBooking(String email){
+    public BookingDetails cancelBooking(String email){
 
         BookingDetails updatedBooking = null;
         Boolean cancelledStatus = false;
@@ -37,7 +37,7 @@ public class AdminServiceImpl implements AdminService {
             adminRepository.save(updatedBooking);
             cancelledStatus = true;
         }
-        return cancelledStatus;
+        return updatedBooking;
     }
 
     @Override
@@ -46,8 +46,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public BookingDetails filterBooking(Date fromDate, Date toDate) {
-        BookingDetails bookingDetails = adminRepository.filterBooking(fromDate,toDate);
+    public List<BookingDetails> filterBooking(Date fromDate, Date toDate) {
+        List<BookingDetails> bookingDetails = adminRepository.filterBooking(fromDate,toDate);
         return bookingDetails;
     }
 

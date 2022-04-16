@@ -17,5 +17,5 @@ public interface AdminRepository extends JpaRepository<BookingDetails, String> {
     BookingDetails findByEmail(String email);
 
     @Query(value = "select * from booking_details where booking_date between :fromdate and :todate", nativeQuery = true)
-    BookingDetails filterBooking(@Param("fromdate") Date fromDate, @Param("todate") Date toDate);
+    List<BookingDetails> filterBooking(@Param("fromdate") Date fromDate, @Param("todate") Date toDate);
 }
