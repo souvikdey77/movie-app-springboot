@@ -1,5 +1,6 @@
 package com.techstudy.moviebookingapp.controller;
 
+import com.techstudy.moviebookingapp.exceptions.CancelBookingException;
 import com.techstudy.moviebookingapp.model.BookingDetails;
 import com.techstudy.moviebookingapp.model.BookingTicketDetails;
 import com.techstudy.moviebookingapp.serviceImpl.AdminServiceImpl;
@@ -28,7 +29,7 @@ public class AdminController {
     public ResponseEntity<BookingDetails> cancelBooking(@PathVariable("email_id") String email) throws Exception {
         BookingDetails bookingDetails = serviceImpl.cancelBooking(email);
          if(!bookingDetails.getBookingStatus().equalsIgnoreCase("cancelled")){
-             throw new Exception("Booking is not cancelled with id : " + email);
+             throw new CancelBookingException(email);
          }
          return new ResponseEntity<>(bookingDetails, HttpStatus.OK);
     }
@@ -42,18 +43,12 @@ public class AdminController {
     @GetMapping("/bookings/filter")
     public ResponseEntity<List<BookingDetails>> filterBooking(@RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date fromDate, @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date toDate) throws Exception {
         List<BookingDetails> bookingDetails = serviceImpl.filterBooking(fromDate,toDate);
-        if(bookingDetails.size() == 0){
-            throw new Exception("No data found");
-        }
         return new ResponseEntity<>(bookingDetails, HttpStatus.OK);
     }
 
     @PutMapping("/update/bookings/{email}")
     public ResponseEntity<BookingDetails> updateBooking(@PathVariable("email") String email, @RequestBody BookingTicketDetails bookingTicketDetails) throws Exception {
         BookingDetails updatedDetails = serviceImpl.updateBooking(email, bookingTicketDetails);
-        if(updatedDetails == null){
-            throw new Exception("Booking is not updated for email : "+ email);
-        }
         return new ResponseEntity<>(updatedDetails, HttpStatus.OK);
     }
 }

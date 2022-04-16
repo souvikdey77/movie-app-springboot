@@ -19,6 +19,7 @@ public class BookingDetails {
     private String email;
     private String firstName;
     private String lastName;
+    @Temporal(TemporalType.DATE)
     private Date bookingDate;
     private String bookingStatus;
     private int numberOfTickets;

@@ -16,6 +16,7 @@ public class MovieDescription {
     private String overview;
     private float popularity;
     private String poster_path;
+    private String backdrop_path;
     private String release_date;
     private String title;
     private float vote_average;

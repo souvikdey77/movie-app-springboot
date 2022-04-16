@@ -1,5 +1,8 @@
 package com.techstudy.moviebookingapp.serviceImpl;
 
+import com.techstudy.moviebookingapp.exceptions.FilterBookingException;
+import com.techstudy.moviebookingapp.exceptions.UpdateBookingException;
+import com.techstudy.moviebookingapp.exceptions.UpdateBookingWithMaxLimitException;
 import com.techstudy.moviebookingapp.model.BookingDetails;
 import com.techstudy.moviebookingapp.model.BookingTicketDetails;
 import com.techstudy.moviebookingapp.repository.AdminRepository;
@@ -24,7 +27,6 @@ public class AdminServiceImpl implements AdminService {
     public BookingDetails cancelBooking(String email){
 
         BookingDetails updatedBooking = null;
-        Boolean cancelledStatus = false;
         BookingDetails existingBookingDetails = adminRepository.findByEmail(email);
         if(existingBookingDetails != null){
             updatedBooking = new BookingDetails();
@@ -35,7 +37,6 @@ public class AdminServiceImpl implements AdminService {
             updatedBooking.setMovieTitle(existingBookingDetails.getMovieTitle());
             updatedBooking.setLastName(existingBookingDetails.getLastName());
             adminRepository.save(updatedBooking);
-            cancelledStatus = true;
         }
         return updatedBooking;
     }
@@ -48,6 +49,9 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<BookingDetails> filterBooking(Date fromDate, Date toDate) {
         List<BookingDetails> bookingDetails = adminRepository.filterBooking(fromDate,toDate);
+        if(bookingDetails.size() == 0){
+            throw new FilterBookingException();
+        }
         return bookingDetails;
     }
 
@@ -56,18 +60,17 @@ public class AdminServiceImpl implements AdminService {
         int maxTicketCount = 10;
         BookingDetails existingBookingDetails = adminRepository.findByEmail(email);
         if(existingBookingDetails != null){
-            existingBookingDetails.setBookingDate(bookingTicketDetails.getBookingDate());
-            existingBookingDetails.setFirstName(bookingTicketDetails.getFirstName());
-            existingBookingDetails.setLastName(bookingTicketDetails.getLastName());
-            existingBookingDetails.setMovieTitle(bookingTicketDetails.getMovieTitle());
-            if(maxTicketCount >= bookingTicketDetails.getNumberOfTickets()){
+            if(bookingTicketDetails.getBookingDate() != null){
+                existingBookingDetails.setBookingDate(bookingTicketDetails.getBookingDate());
+            }
+            if(bookingTicketDetails.getNumberOfTickets() != 0 && maxTicketCount >= bookingTicketDetails.getNumberOfTickets()){
                 existingBookingDetails.setNumberOfTickets(bookingTicketDetails.getNumberOfTickets());
             }else{
-                throw new Exception("Max ticket limit reached");
+                throw new UpdateBookingWithMaxLimitException(email);
             }
             return adminRepository.save(existingBookingDetails);
         }else{
-            throw new Exception("Existing Booking details is not there to update");
+            throw new UpdateBookingException();
         }
     }
 }

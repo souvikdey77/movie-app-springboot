@@ -38,9 +38,6 @@ public class MovieController {
     @PostMapping("/movie/bookTicket")
     public ResponseEntity<BookingDetails> createBooking(@RequestBody BookingTicketDetails bookingTicketDetails) throws Exception {
         BookingDetails bookingDetails = serviceImpl.createBooking(bookingTicketDetails);
-        if(bookingDetails == null){
-            throw new Exception("Kindly verify the booking request and submit again");
-        }
         return new ResponseEntity<>(bookingDetails, HttpStatus.CREATED);
     }
 }
