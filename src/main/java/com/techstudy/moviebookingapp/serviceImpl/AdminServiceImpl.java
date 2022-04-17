@@ -12,17 +12,30 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Service implementation class for Admin related functionalities
+ * @author souvikdey
+ */
 @Service
 public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private AdminRepository adminRepository;
 
+    /**
+     * Business implementation for viewing all the bookings
+     * @return List<BookingDetails>
+     */
     @Override
     public List<BookingDetails> viewBookings() {
         return adminRepository.findAll();
     }
 
+    /**
+     * Business implementation for cancel the booking by providing an email id
+     * @param email
+     * @return BookingDetails
+     */
     @Override
     public BookingDetails cancelBooking(String email){
 
@@ -41,11 +54,22 @@ public class AdminServiceImpl implements AdminService {
         return updatedBooking;
     }
 
+    /**
+     * Business implementation for searching a booking by the admin input which will match with firstname, lastname & email
+     * @param input
+     * @return List<BookingDetails>
+     */
     @Override
     public List<BookingDetails> searchBooking(String input) {
         return adminRepository.searchBooking(input);
     }
 
+    /**
+     * Business implementation for searching a booking by passing fromdate & todate
+     * @param fromDate
+     * @param toDate
+     * @return List<BookingDetails>
+     */
     @Override
     public List<BookingDetails> filterBooking(Date fromDate, Date toDate) {
         List<BookingDetails> bookingDetails = adminRepository.filterBooking(fromDate,toDate);
@@ -55,6 +79,13 @@ public class AdminServiceImpl implements AdminService {
         return bookingDetails;
     }
 
+    /**
+     * Business implementation for updating an existing booking
+     * @param email
+     * @param bookingTicketDetails
+     * @return BookingDetails
+     * @throws Exception
+     */
     @Override
     public BookingDetails updateBooking(String email, BookingTicketDetails bookingTicketDetails) throws Exception {
         int maxTicketCount = 10;

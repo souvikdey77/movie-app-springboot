@@ -7,6 +7,10 @@ import lombok.Setter;
 
 import java.util.Date;
 
+/**
+ * DTO class of booking ticket details
+ * @author souvikdey
+ */
 @Getter
 @Setter
 @AllArgsConstructor

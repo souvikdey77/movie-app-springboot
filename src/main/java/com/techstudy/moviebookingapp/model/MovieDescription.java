@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * DTO class of movie description
+ * @author souvikdey
+ */
 @Getter
 @Setter
 @AllArgsConstructor

@@ -1,5 +1,8 @@
 package com.techstudy.moviebookingapp.exceptions;
 
+/**
+ * @author souvikdey
+ */
 public class CancelBookingException extends RuntimeException{
 
     public CancelBookingException(String email){

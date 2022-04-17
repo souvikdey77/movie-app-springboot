@@ -10,6 +10,10 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Exception handler class which will handle the exceptions and return a user-friendly message
+ * @author souvikdey
+ */
 @ControllerAdvice
 public class MovieExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -58,6 +62,14 @@ public class MovieExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", "Number of seats quota is exceeded");
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateBookingException.class)
+    public ResponseEntity<Object> handleDuplicateBookingException(DuplicateBookingException ex, WebRequest request) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", "Ticket booking is already done. Kindly raise request to admin for any change");
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 }
