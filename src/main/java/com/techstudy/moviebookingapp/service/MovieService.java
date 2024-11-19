@@ -12,5 +12,5 @@ public interface MovieService {
      List<MovieDescription> getPopularMovies();
      PopularMovieResponse searchMovie(String input);
      MovieDetails getMovieDetails(String movieId);
-     BookingDetails createBooking(BookingDetails bookingDetails) throws Exception;
+     BookingDetails createBooking(BookingDetails bookingDetails);
 }

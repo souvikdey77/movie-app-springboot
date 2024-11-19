@@ -1,4 +1,4 @@
-package com.techstudy.moviebookingapp.serviceImpl;
+package com.techstudy.moviebookingapp.serviceimpl;
 
 import com.techstudy.moviebookingapp.exceptions.FilterBookingException;
 import com.techstudy.moviebookingapp.exceptions.UpdateBookingException;

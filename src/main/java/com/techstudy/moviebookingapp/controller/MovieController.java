@@ -1,8 +1,7 @@
 package com.techstudy.moviebookingapp.controller;
 
 import com.techstudy.moviebookingapp.model.*;
-import com.techstudy.moviebookingapp.serviceImpl.MovieServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.techstudy.moviebookingapp.serviceimpl.MovieServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +18,11 @@ import java.util.List;
 @RequestMapping("/movie-management")
 public class MovieController {
 
-    @Autowired
-    private MovieServiceImpl serviceImpl;
+    private final MovieServiceImpl serviceImpl;
+
+    public MovieController(MovieServiceImpl serviceImpl) {
+        this.serviceImpl = serviceImpl;
+    }
 
     /**
      * Method to get the first 10 popular movies
@@ -34,7 +36,7 @@ public class MovieController {
 
     /**
      * Method to search a movie
-     * @param input
+     * @param input it can be any input to search the movie
      * @return PopularMovieResponse
      */
     @GetMapping("/search/movies")
@@ -45,7 +47,7 @@ public class MovieController {
 
     /**
      * Method to get the movie details of a given movie id
-     * @param movieId
+     * @param movieId id of the movie
      * @return MovieDetails
      */
     @GetMapping("/movies/{movie_id}")
@@ -56,12 +58,11 @@ public class MovieController {
 
     /**
      * Method to create a booking for a movie
-     * @param bookingDetails
+     * @param bookingDetails the booking details
      * @return BookingDetails
-     * @throws Exception
      */
     @PostMapping("/movie/bookTicket")
-    public ResponseEntity<BookingDetails> createBooking(@RequestBody @Valid BookingDetails bookingDetails) throws Exception {
+    public ResponseEntity<BookingDetails> createBooking(@RequestBody @Valid BookingDetails bookingDetails) {
         BookingDetails bookings = serviceImpl.createBooking(bookingDetails);
         return new ResponseEntity<>(bookings, HttpStatus.CREATED);
     }

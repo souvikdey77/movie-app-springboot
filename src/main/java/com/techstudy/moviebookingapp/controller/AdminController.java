@@ -3,7 +3,7 @@ package com.techstudy.moviebookingapp.controller;
 import com.techstudy.moviebookingapp.exceptions.CancelBookingException;
 import com.techstudy.moviebookingapp.model.BookingDetails;
 import com.techstudy.moviebookingapp.model.BookingTicketDetails;
-import com.techstudy.moviebookingapp.serviceImpl.AdminServiceImpl;
+import com.techstudy.moviebookingapp.serviceimpl.AdminServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
