@@ -15,6 +15,6 @@ public interface AdminService {
      BookingDetails cancelBooking(String email);
      List<BookingDetails> searchBooking(String input);
      List<BookingDetails> filterBooking(Date fromDate, Date toDate);
-     BookingDetails updateBooking(String email, BookingTicketDetails bookingTicketDetails) throws Exception;
+     BookingDetails updateBooking(String email, BookingTicketDetails bookingTicketDetails) ;
 
 }

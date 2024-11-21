@@ -12,8 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+
 import static java.util.Objects.requireNonNull;
-import java.util.stream.Collectors;
+
 
 /**
  * Service implementation class for Movie related functionalities
@@ -24,7 +25,10 @@ import java.util.stream.Collectors;
 public class MovieServiceImpl implements MovieService {
 
     @Value("${movie.db.api}")
-    private String movieApi;
+    String movieApi;
+
+    @Value("${movie.externalsearchurl}")
+    String externalSearchServiceUrl;
 
     private final RestTemplate restTemplate;
     private final AdminRepository repository;
@@ -40,27 +44,22 @@ public class MovieServiceImpl implements MovieService {
      * @return List<MovieDescription>
      */
     @Override
-    public List<MovieDescription> getPopularMovies() {
+    public List<MovieDescription> getPopularMovies(String popularNumber) {
+        int noOfMovies = Integer.parseInt(popularNumber);
         ResponseEntity<PopularMovieResponse> resPopularMovies = restTemplate.getForEntity(movieApi, PopularMovieResponse.class);
-        List<MovieDescription> movies = requireNonNull(resPopularMovies.getBody()).getResults().stream().limit(10).collect(Collectors.toList());
-        if (movies.isEmpty()) {
-            throw new MovieNotFoundException();
-        }
-        return movies;
+        return requireNonNull(resPopularMovies.getBody()).getResults().stream().limit(noOfMovies).toList();
     }
 
     /**
      * Business implementation for search a movie based on the given input
      *
-     * @param input to search the movie
+     * @param input to search the movie in the original_title (example : <a href="https://api.themoviedb.org/3/search/movie?api_key=102196722a052b03fa096856c680badd&language=en-US&query=venom&page=1&include_adult=false">...</a>)
      * @return PopularMovieResponse
      */
     @Override
     public PopularMovieResponse searchMovie(String input) {
-        ResponseEntity<PopularMovieResponse> resPopularMovies = null;
-        String externalSearchServiceUrl = "https://api.themoviedb.org/3/search/movie?api_key=102196722a052b03fa096856c680badd&language=en-US&query=";
         String pageAndIncludeAdult = "&page=1&include_adult=false";
-        resPopularMovies = restTemplate.getForEntity(externalSearchServiceUrl + input + pageAndIncludeAdult, PopularMovieResponse.class);
+        ResponseEntity<PopularMovieResponse> resPopularMovies = restTemplate.getForEntity(externalSearchServiceUrl + input + pageAndIncludeAdult, PopularMovieResponse.class);
         if (requireNonNull(resPopularMovies.getBody()).getResults().isEmpty()) {
             throw new MovieNotFoundException();
         }
@@ -75,7 +74,9 @@ public class MovieServiceImpl implements MovieService {
      */
     @Override
     public MovieDetails getMovieDetails(String movieId) {
-        ResponseEntity<MovieDetails> movieDetails = restTemplate.getForEntity("https://api.themoviedb.org/3/movie/" + movieId + "?api_key=102196722a052b03fa096856c680badd&language=en-US", MovieDetails.class);
+        String movieApiWithKey = "https://api.themoviedb.org/3/movie/";
+        String apiKey = "?api_key=102196722a052b03fa096856c680badd&language=en-US";
+        ResponseEntity<MovieDetails> movieDetails = restTemplate.getForEntity(movieApiWithKey + movieId + apiKey, MovieDetails.class);
         return movieDetails.getBody();
     }
 

@@ -17,6 +17,14 @@ import java.util.Map;
 @ControllerAdvice
 public class MovieExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<Object> handleInvalidInputException(InvalidInputException ex, WebRequest request) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", "Kindly provide the valid value in the field popularNumber");
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(CancelBookingException.class)
     public ResponseEntity<Object> handleCancelBookingdException(CancelBookingException ex, WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();

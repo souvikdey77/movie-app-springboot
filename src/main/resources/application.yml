@@ -1,0 +1,21 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console.enabled: true
+#spring.jpa.hibernate.ddl-auto=update
+#spring.datasource.url=postgres://dxbynyyjxpbbcl:11fc18a6cad223559736a2e54ef2848a33112b05062c4af39b07eca76f7d5701@ec2-52-203-118-49.compute-1.amazonaws.com:5432/d6j7hp6rqd96ch/movies_db
+#spring.datasource.driver-class-name=org.postgresql.Driver
+#spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+movie:
+   db:
+    api: https://api.themoviedb.org/3/discover/movie?api_key=102196722a052b03fa096856c680badd&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_watch_monetization_types=flatrate
+   externalsearchurl: https://api.themoviedb.org/3/search/movie?api_key=102196722a052b03fa096856c680badd&language=en-US&query=

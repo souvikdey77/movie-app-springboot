@@ -1,18 +1,26 @@
 package com.techstudy.moviebookingapp.model;
 
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 /**
  * Entity class of booking details
+ *
  * @author souvikdey
  */
 @Entity
@@ -24,7 +32,7 @@ import java.util.Date;
 public class BookingDetails {
     @Id
     @Column(length = 200)
-    @NotEmpty(message = "Email is mandatory")
+    @NotBlank(message = "Email is mandatory")
     @Email(message = "Please provide a valid email address")
     private String email;
     @NotEmpty(message = "First name is mandatory")

@@ -9,7 +9,7 @@ import java.util.List;
  * @author souvikdey
  */
 public interface MovieService {
-     List<MovieDescription> getPopularMovies();
+     List<MovieDescription> getPopularMovies(String number);
      PopularMovieResponse searchMovie(String input);
      MovieDetails getMovieDetails(String movieId);
      BookingDetails createBooking(BookingDetails bookingDetails);

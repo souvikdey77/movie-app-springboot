@@ -4,7 +4,6 @@ import com.techstudy.moviebookingapp.exceptions.CancelBookingException;
 import com.techstudy.moviebookingapp.model.BookingDetails;
 import com.techstudy.moviebookingapp.model.BookingTicketDetails;
 import com.techstudy.moviebookingapp.serviceimpl.AdminServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,11 @@ import java.util.List;
 @RequestMapping("/admin-management")
 public class AdminController {
 
-    @Autowired
-    private AdminServiceImpl serviceImpl;
+    private final AdminServiceImpl serviceImpl;
+
+    public AdminController(AdminServiceImpl serviceImpl) {
+        this.serviceImpl = serviceImpl;
+    }
 
     /**
      * Method to view all the bookings
@@ -35,12 +37,11 @@ public class AdminController {
 
     /**
      * Method to cancel a given booking
-     * @param email
+     * @param email email id to be provided
      * @return BookingDetails
-     * @throws Exception
      */
     @GetMapping("/bookings/cancel/{email_id}")
-    public ResponseEntity<BookingDetails> cancelBooking(@PathVariable("email_id") String email) throws Exception {
+    public ResponseEntity<BookingDetails> cancelBooking(@PathVariable("email_id") String email) {
         BookingDetails bookingDetails = serviceImpl.cancelBooking(email);
          if(!bookingDetails.getBookingStatus().equalsIgnoreCase("cancelled")){
              throw new CancelBookingException(email);
@@ -50,7 +51,7 @@ public class AdminController {
 
     /**
      * Method to search for all the booking by giving the input which will check with firstname, lastname & email
-     * @param input
+     * @param input input string needs to be provided
      * @return List<BookingDetails>
      */
     @GetMapping("/bookings/search")
@@ -61,26 +62,24 @@ public class AdminController {
 
     /**
      * Method to filter all the bookings by passing fromdate and todate
-     * @param fromDate
-     * @param toDate
+     * @param fromDate from date to be provided
+     * @param toDate to date to be provided
      * @return List<BookingDetails>
-     * @throws Exception
      */
     @GetMapping("/bookings/filter")
-    public ResponseEntity<List<BookingDetails>> filterBooking(@RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date fromDate, @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date toDate) throws Exception {
+    public ResponseEntity<List<BookingDetails>> filterBooking(@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date fromDate, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date toDate) {
         List<BookingDetails> bookingDetails = serviceImpl.filterBooking(fromDate,toDate);
         return new ResponseEntity<>(bookingDetails, HttpStatus.OK);
     }
 
     /**
      * Method to update an existing booking
-     * @param email
-     * @param bookingTicketDetails
+     * @param email email id to be provided
+     * @param bookingTicketDetails booking ticket details to be provided
      * @return BookingDetails
-     * @throws Exception
      */
     @PutMapping("/update/bookings/{email}")
-    public ResponseEntity<BookingDetails> updateBooking(@PathVariable("email") String email, @RequestBody BookingTicketDetails bookingTicketDetails) throws Exception {
+    public ResponseEntity<BookingDetails> updateBooking(@PathVariable("email") String email, @RequestBody BookingTicketDetails bookingTicketDetails) {
         BookingDetails updatedDetails = serviceImpl.updateBooking(email, bookingTicketDetails);
         return new ResponseEntity<>(updatedDetails, HttpStatus.OK);
     }
