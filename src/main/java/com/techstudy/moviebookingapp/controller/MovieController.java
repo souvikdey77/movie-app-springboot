@@ -8,6 +8,7 @@ import com.techstudy.moviebookingapp.model.MovieDetails;
 import com.techstudy.moviebookingapp.model.PopularMovieResponse;
 import com.techstudy.moviebookingapp.serviceimpl.MovieServiceImpl;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,6 +29,7 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/movie-management")
+@Slf4j
 public class MovieController {
 
     private final MovieServiceImpl serviceImpl;
@@ -42,10 +44,13 @@ public class MovieController {
      */
     @GetMapping("/popular/movies/{number}")
     public ResponseEntity<List<MovieDescription>> getPopularMovies(@PathVariable String number){
+        log.info("MovieController : getPopularMovies started");
         try{
             List<MovieDescription> popularMovieResponse =  serviceImpl.getPopularMovies(number);
+            log.info("MovieController : getPopularMovies completed");
             return new ResponseEntity<>(popularMovieResponse, HttpStatus.OK);
         }catch (NumberFormatException e) {
+            log.info("MovieController : getPopularMovies error occurred with parameter {}",number);
             throw new InvalidInputException("Kindly provide the valid number in the popularNumber");
         }
     }
@@ -57,7 +62,10 @@ public class MovieController {
      */
     @GetMapping("/search/movies")
     public ResponseEntity<PopularMovieResponse> searchMovies(@RequestParam String input){
+        log.info("MovieController : searchMovies started");
         PopularMovieResponse searchResponse =  serviceImpl.searchMovie(input);
+        log.info("MovieController : getMovieDetails searchResponse is {}",searchResponse);
+        log.info("MovieController : searchMovies completed");
         return new ResponseEntity<>(searchResponse, HttpStatus.OK);
     }
 
@@ -68,7 +76,10 @@ public class MovieController {
      */
     @GetMapping("/movies/{movie_id}")
     public ResponseEntity<MovieDetails> getMovieDetails(@PathVariable(name = "movie_id") String movieId){
+        log.info("MovieController : getMovieDetails started");
         MovieDetails movieDetails =  serviceImpl.getMovieDetails(movieId);
+        log.info("MovieController : getMovieDetails response is {}",movieDetails);
+        log.info("MovieController : getMovieDetails completed");
         return new ResponseEntity<>(movieDetails, HttpStatus.OK);
     }
 
@@ -79,7 +90,10 @@ public class MovieController {
      */
     @PostMapping("/bookTicket")
     public ResponseEntity<BookingDetails> createBooking(@RequestBody @Valid  BookingDetails bookingDetails) {
+        log.info("MovieController : createBooking started");
         BookingDetails bookings = serviceImpl.createBooking(bookingDetails);
+        log.info("MovieController : createBooking bookings data is {}",bookings);
+        log.info("MovieController : createBooking completed");
         return new ResponseEntity<>(bookings, HttpStatus.CREATED);
     }
 }

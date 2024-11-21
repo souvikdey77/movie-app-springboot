@@ -6,6 +6,8 @@ import com.techstudy.moviebookingapp.exceptions.MovieNotFoundException;
 import com.techstudy.moviebookingapp.model.*;
 import com.techstudy.moviebookingapp.repository.AdminRepository;
 import com.techstudy.moviebookingapp.service.MovieService;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import static java.util.Objects.requireNonNull;
  * @author Souvik Dey
  */
 @Service
+@Slf4j
+@Transactional
 public class MovieServiceImpl implements MovieService {
 
     @Value("${movie.db.api}")
@@ -45,9 +49,14 @@ public class MovieServiceImpl implements MovieService {
      */
     @Override
     public List<MovieDescription> getPopularMovies(String popularNumber) {
+        log.info("MovieServiceImpl : getPopularMovies started with popularNumber {}",popularNumber);
         int noOfMovies = Integer.parseInt(popularNumber);
+        log.info("MovieServiceImpl : getPopularMovies popularNumber is {}",popularNumber);
         ResponseEntity<PopularMovieResponse> resPopularMovies = restTemplate.getForEntity(movieApi, PopularMovieResponse.class);
-        return requireNonNull(resPopularMovies.getBody()).getResults().stream().limit(noOfMovies).toList();
+        List<MovieDescription> movieDescriptionList = requireNonNull(resPopularMovies.getBody()).getResults().stream().limit(noOfMovies).toList();
+        log.info("MovieServiceImpl : getPopularMovies response is {}", movieDescriptionList);
+        log.info("MovieServiceImpl : getPopularMovies completed");
+        return movieDescriptionList;
     }
 
     /**
@@ -58,11 +67,15 @@ public class MovieServiceImpl implements MovieService {
      */
     @Override
     public PopularMovieResponse searchMovie(String input) {
+        log.info("MovieServiceImpl : searchMovie started");
         String pageAndIncludeAdult = "&page=1&include_adult=false";
         ResponseEntity<PopularMovieResponse> resPopularMovies = restTemplate.getForEntity(externalSearchServiceUrl + input + pageAndIncludeAdult, PopularMovieResponse.class);
+        log.error("MovieServiceImpl : searchMovie response  is {}",resPopularMovies.getBody());
         if (requireNonNull(resPopularMovies.getBody()).getResults().isEmpty()) {
+            log.error("MovieServiceImpl : searchMovie result is empty");
             throw new MovieNotFoundException();
         }
+        log.info("MovieServiceImpl : searchMovie completed");
         return resPopularMovies.getBody();
     }
 
@@ -74,10 +87,14 @@ public class MovieServiceImpl implements MovieService {
      */
     @Override
     public MovieDetails getMovieDetails(String movieId) {
+        log.info("MovieServiceImpl : getMovieDetails started for movie id {}",movieId);
         String movieApiWithKey = "https://api.themoviedb.org/3/movie/";
         String apiKey = "?api_key=102196722a052b03fa096856c680badd&language=en-US";
         ResponseEntity<MovieDetails> movieDetails = restTemplate.getForEntity(movieApiWithKey + movieId + apiKey, MovieDetails.class);
-        return movieDetails.getBody();
+        MovieDetails details = movieDetails.getBody();
+        log.info("MovieServiceImpl : getMovieDetails response is {}",details);
+        log.info("MovieServiceImpl : getMovieDetails completed");
+        return details;
     }
 
     /**
@@ -88,15 +105,20 @@ public class MovieServiceImpl implements MovieService {
      */
     @Override
     public BookingDetails createBooking(BookingDetails bookingDetails) {
+        log.info("MovieServiceImpl : createBooking started with bookingDetails {}",bookingDetails);
         BookingDetails existingBooking = repository.findByEmail(bookingDetails.getEmail());
         if (existingBooking == null && bookingDetails.getNumberOfTickets() <= 10) {
             bookingDetails.setBookingStatus("confirmed");
             repository.save(bookingDetails);
+            log.error("MovieServiceImpl : createBooking booking is successful");
         } else if (bookingDetails.getNumberOfTickets() > 10) {
+            log.error("MovieServiceImpl : createBooking number of tickets are more than 10");
             throw new CreateBookingException(bookingDetails.getNumberOfTickets(), bookingDetails.getEmail());
         } else {
+            log.error("MovieServiceImpl : createBooking duplicate booking occurred");
             throw new DuplicateBookingException();
         }
+        log.info("MovieServiceImpl : createBooking completed");
         return bookingDetails;
     }
 }
